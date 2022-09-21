@@ -2,7 +2,7 @@
  * @Author: cui<devcui@outlook.com>
  * @LastEditors: cui<devcui@outlook.com>
  * @Date: 2022-09-20 15:21:07
- * @LastEditTime: 2022-09-21 16:16:55
+ * @LastEditTime: 2022-09-21 16:45:56
  * @FilePath: \custom-chart-plugins\echarts-3d-barchart.js
  * @Description:
  *
@@ -91,26 +91,30 @@ function Echarts3dBarchart({ dHelper }) {
         const aggregateConfigs = dataConfigs.filter(c => c.type === 'aggregate').flatMap(config => config.rows || []);
         const objDataColumns = dHelper.transformToObjectArray(dataset.rows, dataset.columns);
         objDataColumns.forEach((dc) => {
-          if (groupConfigs && groupConfigs.length > 0) {
-            const xKey = dHelper.getValueByColumnKey(groupConfigs[0])
-            if (xCategory.indexOf(dc[xKey]) === -1) {
-              xCategory.push(dc[xKey])
-            }
+          const xKey = dHelper.getValueByColumnKey(groupConfigs[0])
+          if (xCategory.indexOf(dc[xKey]) === -1) {
+            xCategory.push(dc[xKey])
           }
-          if (groupConfigs && groupConfigs.length > 1) {
-            const yKey = dHelper.getValueByColumnKey(groupConfigs[1])
-            if (yCategory.indexOf(dc[yKey]) === -1) {
-              yCategory.push(dc[yKey])
-            }
+          const yKey = dHelper.getValueByColumnKey(groupConfigs[1])
+          if (yCategory.indexOf(dc[yKey]) === -1) {
+            yCategory.push(dc[yKey])
           }
-          if (groupConfigs && groupConfigs.length > 1 && aggregateConfigs && aggregateConfigs.length > 0) {
-            const xKey = dHelper.getValueByColumnKey(groupConfigs[0])
-            const yKey = dHelper.getValueByColumnKey(groupConfigs[1])
-            const zKey = dHelper.getValueByColumnKey(aggregateConfigs[0])
-            data.push([dc[xKey], dc[yKey], dc[zKey]])
+          const zKey = dHelper.getValueByColumnKey(aggregateConfigs[0])
+          data.push([dc[xKey], dc[yKey], dc[zKey]])
+        })
+        const series = data.map((d, index) => {
+          return {
+            type: 'bar3D',
+            data: [d],
+            stack: [d[0], d[1]],
+            shading: 'lambert',
+            emphasis: {
+              label: {
+                show: true
+              }
+            }
           }
         })
-
         instance.setOption({
           xAxis3D: {
             type: 'category',
@@ -125,7 +129,7 @@ function Echarts3dBarchart({ dHelper }) {
           },
           grid3D: {
             viewControl: {
-              autoRotate: true
+              autoRotate: false
             },
             light: {
               main: {
@@ -136,25 +140,19 @@ function Echarts3dBarchart({ dHelper }) {
             }
           },
           animation: true,
-          series: data.map((d) => {
-            return {
-              type: 'bar3D',
-              data: [d],
-              shading: 'lambert',
-              emphasis: {
-                label: {
-                  show: true
-                }
-              }
-            }
-          })
+          series: series
         })
       }
     },
     onUnMount() {
+      if (instance) {
+        instance.dispose();
+      }
     },
     onResize(opt, context) {
-      instance.resize()
+      if (instance) {
+        instance.resize()
+      }
     },
   };
 }
