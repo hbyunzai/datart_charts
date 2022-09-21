@@ -2,7 +2,7 @@
  * @Author: cui<devcui@outlook.com>
  * @LastEditors: cui<devcui@outlook.com>
  * @Date: 2022-09-20 15:21:07
- * @LastEditTime: 2022-09-21 15:19:52
+ * @LastEditTime: 2022-09-21 16:16:55
  * @FilePath: \custom-chart-plugins\echarts-3d-barchart.js
  * @Description:
  *
@@ -107,11 +107,10 @@ function Echarts3dBarchart({ dHelper }) {
             const xKey = dHelper.getValueByColumnKey(groupConfigs[0])
             const yKey = dHelper.getValueByColumnKey(groupConfigs[1])
             const zKey = dHelper.getValueByColumnKey(aggregateConfigs[0])
-            data.push([dc[xKey],dc[yKey],dc[zKey]])
+            data.push([dc[xKey], dc[yKey], dc[zKey]])
           }
         })
 
-        console.log(xCategory, yCategory)
         instance.setOption({
           xAxis3D: {
             type: 'category',
@@ -137,11 +136,10 @@ function Echarts3dBarchart({ dHelper }) {
             }
           },
           animation: true,
-          series: [
-            {
+          series: data.map((d) => {
+            return {
               type: 'bar3D',
-              data: data,
-              stack: 'stack',
+              data: [d],
               shading: 'lambert',
               emphasis: {
                 label: {
@@ -149,7 +147,7 @@ function Echarts3dBarchart({ dHelper }) {
                 }
               }
             }
-          ]
+          })
         })
       }
     },
