@@ -2,14 +2,17 @@
  * @Author: cui<devcui@outlook.com>
  * @LastEditors: cui<devcui@outlook.com>
  * @Date: 2022-09-20 15:21:07
- * @LastEditTime: 2022-09-20 18:41:35
+ * @LastEditTime: 2022-09-21 09:34:00
  * @FilePath: \custom-chart-plugins\echarts-3d-barchart.js
  * @Description:
  *
  * Copyright (c) 2022 by cui<devcui@outlook.com>, All Rights Reserved.
  */
 function Echarts3dBarchart({ dHelper }) {
-  console.log(dHelper);
+
+
+  let instance = null;
+
   return {
     config: {
       datas: [
@@ -108,7 +111,6 @@ function Echarts3dBarchart({ dHelper }) {
     onMount(options, context) {
       if (!options.containerId || !context.document) return;
       const { window: { echarts, SimplexNoise } } = context;
-      window['getComputedStyle'] = context.window.getComputedStyle
       function generateData() {
         var data = [];
         var noise = new SimplexNoise(Math.random);
@@ -134,7 +136,8 @@ function Echarts3dBarchart({ dHelper }) {
           }
         });
       }
-      const instance = echarts.init(document)
+      const element = context.document.getElementById(options.containerId);
+      instance = echarts.init(element)
       instance.setOption({
         xAxis3D: {
           type: 'value'
@@ -161,7 +164,11 @@ function Echarts3dBarchart({ dHelper }) {
       })
     },
     onUpdated(props, context) { },
-    onUnMount() { },
-    onResize(opt, context) { },
+    onUnMount() { 
+      instance.dispose()
+    },
+    onResize(opt, context) { 
+      instance.resize()
+    },
   };
 }
