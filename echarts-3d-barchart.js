@@ -2,15 +2,14 @@
  * @Author: cui<devcui@outlook.com>
  * @LastEditors: cui<devcui@outlook.com>
  * @Date: 2022-09-20 15:21:07
- * @LastEditTime: 2022-09-21 11:41:29
+ * @LastEditTime: 2022-09-21 15:19:52
  * @FilePath: \custom-chart-plugins\echarts-3d-barchart.js
  * @Description:
  *
  * Copyright (c) 2022 by cui<devcui@outlook.com>, All Rights Reserved.
  */
-function Echarts3dBarchart(params) {
-  var dHelper = params.dHelper;
-  var instance = null;
+function Echarts3dBarchart({ dHelper }) {
+  let instance = null;
   return {
     config: {
       datas: [
@@ -24,8 +23,7 @@ function Echarts3dBarchart(params) {
     dependency: [
       '/custom-chart-plugins/common/simplex-noise.js',
       '/custom-chart-plugins/common/echarts/echarts.js',
-      '/custom-chart-plugins/common/echarts/gl/echarts-gl.js',
-      '/custom-chart-plugins/common/utils.js',
+      '/custom-chart-plugins/common/echarts/gl/echarts-gl.js'
     ],
     meta: {
       id: 'echarts-3d-barchart',
@@ -40,9 +38,9 @@ function Echarts3dBarchart(params) {
     },
     onMount(options, context) {
       if (!options.containerId || !context.document) return;
-      var _echarts = context.window.echarts
-      const _element = context.document.getElementById(options.containerId);
-      instance = _echarts.init(_element)
+      const { window: { echarts } } = context
+      const element = context.document.getElementById(options.containerId);
+      instance = echarts.init(element)
       instance.setOption({
         xAxis3D: {
           type: 'category',
@@ -83,31 +81,45 @@ function Echarts3dBarchart(params) {
         ]
       })
     },
-    onUpdated(props, context) {
-      var _window = context.window
+    onUpdated({ config, dataset }, { window }) {
       if (instance) {
-        const _xCategory = [];
-        const _yCategory = [];
-        // 查询哪些字段是维度
-        const _group = _window.findGroups(props, 0)
-        console.log(_group)
-        const _column = _window.finColumnByGroup(_group)
-        // 获取维度的下标
-        console.log(_column)
-        console.log(props)
-        // 提取维度
+        const data = [];
+        const xCategory = [];
+        const yCategory = [];
+        const dataConfigs = config.datas || [];
+        const groupConfigs = dataConfigs.filter(c => c.type === 'group').flatMap(config => config.rows || []);
+        const aggregateConfigs = dataConfigs.filter(c => c.type === 'aggregate').flatMap(config => config.rows || []);
+        const objDataColumns = dHelper.transformToObjectArray(dataset.rows, dataset.columns);
+        objDataColumns.forEach((dc) => {
+          if (groupConfigs && groupConfigs.length > 0) {
+            const xKey = dHelper.getValueByColumnKey(groupConfigs[0])
+            if (xCategory.indexOf(dc[xKey]) === -1) {
+              xCategory.push(dc[xKey])
+            }
+          }
+          if (groupConfigs && groupConfigs.length > 1) {
+            const yKey = dHelper.getValueByColumnKey(groupConfigs[1])
+            if (yCategory.indexOf(dc[yKey]) === -1) {
+              yCategory.push(dc[yKey])
+            }
+          }
+          if (groupConfigs && groupConfigs.length > 1 && aggregateConfigs && aggregateConfigs.length > 0) {
+            const xKey = dHelper.getValueByColumnKey(groupConfigs[0])
+            const yKey = dHelper.getValueByColumnKey(groupConfigs[1])
+            const zKey = dHelper.getValueByColumnKey(aggregateConfigs[0])
+            data.push([dc[xKey],dc[yKey],dc[zKey]])
+          }
+        })
 
-        // 知道哪些字段是指标
-        // 获取指标的下标
-        // 提取指标
+        console.log(xCategory, yCategory)
         instance.setOption({
           xAxis3D: {
             type: 'category',
-            data: _xCategory,
+            data: xCategory,
           },
           yAxis3D: {
             type: 'category',
-            data: _yCategory
+            data: yCategory
           },
           zAxis3D: {
             type: 'value',
@@ -128,7 +140,7 @@ function Echarts3dBarchart(params) {
           series: [
             {
               type: 'bar3D',
-              data: [],
+              data: data,
               stack: 'stack',
               shading: 'lambert',
               emphasis: {
