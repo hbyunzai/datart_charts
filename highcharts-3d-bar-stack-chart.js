@@ -2,8 +2,8 @@
  * @Author: cui<devcui@outlook.com>
  * @LastEditors: cui<devcui@outlook.com>
  * @Date: 2022-09-22 15:45:50
- * @LastEditTime: 2022-09-22 16:10:14
- * @FilePath: \custom-chart-plugins\highcharts-3d-stack-barchart.js
+ * @LastEditTime: 2022-09-22 16:23:21
+ * @FilePath: \custom-chart-plugins\highcharts-3d-bar-stack-chart.js
  * @Description: 
  * 
  * Copyright (c) 2022 by cui<devcui@outlook.com>, All Rights Reserved. 
@@ -29,8 +29,8 @@ function HighCharts3dStackBarChart({ dHelper }) {
             '/custom-chart-plugins/common/highcharts/code/css/highcharts.css',
         ],
         meta: {
-            id: 'highcharts-3d-stack-barchart',
-            name: '[HIGHCHARTS][3D][STACK][BARCHART]',
+            id: 'highcharts-3d-bar-stack-chart',
+            name: '[Highcharts][3d][Bar][Stack][Chart]',
             icon: 'chart',
             requirements: [
                 {

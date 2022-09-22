@@ -2,8 +2,8 @@
  * @Author: cui<devcui@outlook.com>
  * @LastEditors: cui<devcui@outlook.com>
  * @Date: 2022-09-20 15:21:07
- * @LastEditTime: 2022-09-22 15:59:51
- * @FilePath: \custom-chart-plugins\echarts-3d-barchart.js
+ * @LastEditTime: 2022-09-22 16:25:04
+ * @FilePath: \custom-chart-plugins\echarts-3d-bar-chart.js
  * @Description:
  *
  * Copyright (c) 2022 by cui<devcui@outlook.com>, All Rights Reserved.
@@ -26,8 +26,8 @@ function ECharts3dBarChart({ dHelper }) {
       '/custom-chart-plugins/common/echarts/gl/echarts-gl.js'
     ],
     meta: {
-      id: 'echarts-3d-barchart',
-      name: '[ECHARTS][3D][BARCHART]',
+      id: 'echarts-3d-bar-chart',
+      name: '[Echarts][3d][Bar][Chart]',
       icon: 'chart',
       requirements: [
         {

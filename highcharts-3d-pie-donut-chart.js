@@ -2,8 +2,8 @@
  * @Author: cui<devcui@outlook.com>
  * @LastEditors: cui<devcui@outlook.com>
  * @Date: 2022-09-22 15:45:50
- * @LastEditTime: 2022-09-22 16:13:50
- * @FilePath: \custom-chart-plugins\highcharts-3d-piechart.js
+ * @LastEditTime: 2022-09-22 16:24:09
+ * @FilePath: \custom-chart-plugins\highcharts-3d-donut-pie-chart.js
  * @Description: 
  * 
  * Copyright (c) 2022 by cui<devcui@outlook.com>, All Rights Reserved. 
@@ -29,8 +29,8 @@ function HighCharts3dPieChart({ dHelper }) {
             '/custom-chart-plugins/common/highcharts/code/css/highcharts.css',
         ],
         meta: {
-            id: 'highcharts-3d-piechart',
-            name: '[HIGHCHARTS][3D][PIECHART]',
+            id: 'highcharts-3d-pie-donut-chart',
+            name: '[Highcharts][3d][Pie][Donut][Chart]',
             icon: 'chart',
             requirements: [
                 {
@@ -49,46 +49,36 @@ function HighCharts3dPieChart({ dHelper }) {
                     type: 'pie',
                     options3d: {
                         enabled: true,
-                        alpha: 45,
-                        beta: 0
+                        alpha: 45
                     }
                 },
                 title: {
-                    text: '2014年某网站不同浏览器访问量占比'
+                    text: '简数科技每周水果消耗量'
                 },
-                tooltip: {
-                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                subtitle: {
+                    text: 'Highcharts 中的3D环形图'
                 },
                 plotOptions: {
                     pie: {
-                        allowPointSelect: true,
-                        cursor: 'pointer',
-                        depth: 35,
-                        dataLabels: {
-                            enabled: true,
-                            format: '{point.name}'
-                        }
+                        innerSize: 100,
+                        depth: 45
                     }
                 },
                 series: [{
-                    type: 'pie',
-                    name: '浏览器占比',
+                    name: '货物金额',
                     data: [
-                        ['Firefox', 45.0],
-                        ['IE', 26.8],
-                        {
-                            name: 'Chrome',
-                            y: 12.8,
-                            sliced: true,
-                            selected: true
-                        },
-                        ['Safari', 8.5],
-                        ['Opera', 6.2],
-                        ['Others', 0.7]
+                        ['香蕉', 8],
+                        ['猕猴桃', 3],
+                        ['桃子', 1],
+                        ['橘子', 6],
+                        ['苹果', 8],
+                        ['梨', 4],
+                        ['柑橘', 4],
+                        ['橙子', 1],
+                        ['葡萄 (串)', 1]
                     ]
                 }]
             });
-
         },
         onUpdated(options, context) { },
         onUnMount() { },
