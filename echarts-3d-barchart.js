@@ -2,13 +2,13 @@
  * @Author: cui<devcui@outlook.com>
  * @LastEditors: cui<devcui@outlook.com>
  * @Date: 2022-09-20 15:21:07
- * @LastEditTime: 2022-09-21 16:45:56
+ * @LastEditTime: 2022-09-22 15:59:51
  * @FilePath: \custom-chart-plugins\echarts-3d-barchart.js
  * @Description:
  *
  * Copyright (c) 2022 by cui<devcui@outlook.com>, All Rights Reserved.
  */
-function Echarts3dBarchart({ dHelper }) {
+function ECharts3dBarChart({ dHelper }) {
   let instance = null;
   return {
     config: {
@@ -27,7 +27,7 @@ function Echarts3dBarchart({ dHelper }) {
     ],
     meta: {
       id: 'echarts-3d-barchart',
-      name: '[Echarts][3D][Barchart]',
+      name: '[ECHARTS][3D][BARCHART]',
       icon: 'chart',
       requirements: [
         {
@@ -149,7 +149,7 @@ function Echarts3dBarchart({ dHelper }) {
         instance.dispose();
       }
     },
-    onResize(opt, context) {
+    onResize(options, context) {
       if (instance) {
         instance.resize()
       }
