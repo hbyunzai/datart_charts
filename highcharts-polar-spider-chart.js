@@ -2,7 +2,7 @@
  * @Author: cui<devcui@outlook.com>
  * @LastEditors: cui<devcui@outlook.com>
  * @Date: 2022-09-22 17:11:30
- * @LastEditTime: 2022-09-26 14:27:00
+ * @LastEditTime: 2022-09-26 15:06:18
  * @FilePath: \custom-chart-plugins\highcharts-polar-spider-chart.js
  * @Description: 
  * 
@@ -132,8 +132,6 @@ function HighChartsPolarSpiderChart({ dHelper }) {
                 })
                 series.push(serie)
             })
-            console.log(filteredCategories)
-            console.log(series)
 
             instance = Highcharts.chart(containerId, {
                 chart: {
