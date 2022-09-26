@@ -2,7 +2,7 @@
  * @Author: cui<devcui@outlook.com>
  * @LastEditors: cui<devcui@outlook.com>
  * @Date: 2022-09-22 17:20:31
- * @LastEditTime: 2022-09-23 09:45:17
+ * @LastEditTime: 2022-09-26 15:08:07
  * @FilePath: \custom-chart-plugins\highcharts-pyramid-chart.js
  * @Description: 
  * 
@@ -92,6 +92,7 @@ function HighChartsPyramidChart({ dHelper }) {
             if (!options.containerId || !context.document) return;
             const { window: { Highcharts } } = context
             const { config, dataset, containerId } = options;
+            if (!dataset || !dataset.rows || dataset.rows.length === 0) return
             const dataConfigs = config.datas || [];
             const styleConfigs = config.styles;
             const groupConfigs = dataConfigs
