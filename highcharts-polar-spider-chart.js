@@ -2,7 +2,7 @@
  * @Author: cui<devcui@outlook.com>
  * @LastEditors: cui<devcui@outlook.com>
  * @Date: 2022-09-22 17:11:30
- * @LastEditTime: 2022-09-22 17:27:11
+ * @LastEditTime: 2022-09-26 11:14:23
  * @FilePath: \custom-chart-plugins\highcharts-polar-spider-chart.js
  * @Description: 
  * 
@@ -17,7 +17,13 @@ function HighChartsPolarSpiderChart({ dHelper }) {
                 { label: "dimension", key: "dimension", type: "group", allowSameField: false },
                 { label: "metrics", key: "metrics", type: "aggregate", allowSameField: false }
             ],
-            styles: [],
+            styles: [
+                {
+                    label: '标题',
+                    key: 'title',
+                    comType: 'input',
+                }
+            ],
             i18ns: [],
         },
         isISOContainer: 'highcharts',
@@ -40,7 +46,6 @@ function HighChartsPolarSpiderChart({ dHelper }) {
         },
         onMount(options, context) {
             if (!options.containerId || !context.document) return;
-            if (!options.containerId || !context.document) return;
             const { window: { Highcharts } } = context
             const { containerId } = options
             instance = Highcharts.chart(containerId, {
@@ -56,8 +61,7 @@ function HighChartsPolarSpiderChart({ dHelper }) {
                     size: '80%'
                 },
                 xAxis: {
-                    categories: ['销售', '市场营销', '发展', '客户支持',
-                        '信息技术', '行政管理'],
+                    categories: ['销售', '市场营销', '发展', '客户支持', '信息技术', '行政管理'],
                     tickmarkPlacement: 'on',
                     lineWidth: 0
                 },
@@ -87,7 +91,82 @@ function HighChartsPolarSpiderChart({ dHelper }) {
                 }]
             });
         },
-        onUpdated(options, context) { },
+        onUpdated(options, context) {
+            if (!options.containerId || !context.document) return;
+
+            const { window: { Highcharts } } = context
+            const { config, dataset, containerId } = options;
+            const styleConfigs = config.styles;
+
+            // 标题
+            let title = styleConfigs.filter((style) => style.key === 'title')
+            title = title.length > 0 ? title[0].value : 'title'
+
+            // 获取类型
+            const categories = dataset.rows.map(d => d[0])
+            const seriesNames = dataset.rows.map(d => d[1])
+
+            // 去重 
+            let filteredCategories = []
+            categories.forEach((c) => {
+                if (!filteredCategories.includes(c)) filteredCategories.push(c)
+            })
+            let filteredSeriesNames = []
+            seriesNames.forEach((c) => {
+                if (!filteredSeriesNames.includes(c)) filteredSeriesNames.push(c)
+            })
+
+            // 构造指标
+            let series = []
+            filteredSeriesNames.forEach((s) => {
+                const serie = {
+                    name: s,
+                    data: [],
+                    pointPlacement: 'on'
+                }
+                dataset.rows.forEach((r) => {
+                    if (r[1] === s) {
+                        serie.data.push(r[2])
+                    }
+                })
+                series.push(serie)
+            })
+            instance = Highcharts.chart(containerId, {
+                chart: {
+                    polar: true,
+                    type: 'line'
+                },
+                title: {
+                    text: title,
+                    x: -80
+                },
+                pane: {
+                    size: '80%'
+                },
+                xAxis: {
+                    categories: filteredSeriesNames,
+                    tickmarkPlacement: 'on',
+                    lineWidth: 0
+                },
+                yAxis: {
+                    gridLineInterpolation: 'polygon',
+                    lineWidth: 0,
+                    min: 0
+                },
+                tooltip: {
+                    shared: true,
+                    pointFormat: '<span style="color:{series.color}">{series.name}: <b>${point.y:,.0f}</b><br/>'
+                },
+                legend: {
+                    align: 'right',
+                    verticalAlign: 'top',
+                    y: 70,
+                    layout: 'vertical'
+                },
+                series: series
+            });
+
+        },
         onUnMount() { },
         onResize(options, context) { }
     }
