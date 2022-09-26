@@ -2,7 +2,7 @@
  * @Author: cui<devcui@outlook.com>
  * @LastEditors: cui<devcui@outlook.com>
  * @Date: 2022-09-22 17:11:30
- * @LastEditTime: 2022-09-26 11:14:23
+ * @LastEditTime: 2022-09-26 11:20:41
  * @FilePath: \custom-chart-plugins\highcharts-polar-spider-chart.js
  * @Description: 
  * 
@@ -93,9 +93,10 @@ function HighChartsPolarSpiderChart({ dHelper }) {
         },
         onUpdated(options, context) {
             if (!options.containerId || !context.document) return;
+            const { config, dataset, containerId } = options;
+            if (!dataset || !dataset.rows || dataset.rows.length === 0) return
 
             const { window: { Highcharts } } = context
-            const { config, dataset, containerId } = options;
             const styleConfigs = config.styles;
 
             // 标题
