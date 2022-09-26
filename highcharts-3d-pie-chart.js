@@ -2,7 +2,7 @@
  * @Author: cui<devcui@outlook.com>
  * @LastEditors: cui<devcui@outlook.com>
  * @Date: 2022-09-22 15:45:50
- * @LastEditTime: 2022-09-22 16:27:41
+ * @LastEditTime: 2022-09-26 17:33:33
  * @FilePath: \custom-chart-plugins\highcharts-3d-pie-chart.js
  * @Description: 
  * 
@@ -18,7 +18,23 @@ function HighCharts3dPieChart({ dHelper }) {
                 { label: "dimension", key: "dimension", type: "group", allowSameField: false },
                 { label: "metrics", key: "metrics", type: "aggregate", allowSameField: false }
             ],
-            styles: [],
+            styles: [
+                {
+                    label: '标题',
+                    key: 'title',
+                    comType: 'input',
+                },
+                {
+                    label: '描述',
+                    key: 'desc',
+                    comType: 'input',
+                },
+                {
+                    label: '图例',
+                    key: 'name',
+                    comType: 'input',
+                }
+            ],
             i18ns: [],
         },
         isISOContainer: 'highcharts-3d',
@@ -90,7 +106,58 @@ function HighCharts3dPieChart({ dHelper }) {
             });
 
         },
-        onUpdated(options, context) { },
+        onUpdated(options, context) {
+            if (!options.containerId || !context.document) return;
+            const { config, dataset, containerId } = options;
+            if (!dataset || !dataset.rows || dataset.rows.length === 0) return
+            const { window: { Highcharts } } = context
+            const styleConfigs = config.styles;
+            // 标题
+            let title = styleConfigs.filter((style) => style.key === 'title')
+            title = title.length > 0 ? title[0].value : 'title'
+            // 描述
+            let desc = styleConfigs.filter((style) => style.key === 'desc')
+            desc = desc.length > 0 ? desc[0].value : 'desc'
+            // 图例
+            let name = styleConfigs.filter((style) => style.key === 'name')
+            name = name.length > 0 ? name[0].value : 'name'
+
+            instance = Highcharts.chart(containerId, {
+                chart: {
+                    type: 'pie',
+                    options3d: {
+                        enabled: true,
+                        alpha: 45,
+                        beta: 0
+                    }
+                },
+                title: {
+                    text: title
+                },
+                subtitle: {
+                    text: desc
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        depth: 35,
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.name}'
+                        }
+                    }
+                },
+                series: [{
+                    type: 'pie',
+                    name: name,
+                    data: dataset.rows
+                }]
+            });
+        },
         onUnMount() { },
         onResize(options, context) { }
     }

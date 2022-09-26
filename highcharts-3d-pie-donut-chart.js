@@ -2,7 +2,7 @@
  * @Author: cui<devcui@outlook.com>
  * @LastEditors: cui<devcui@outlook.com>
  * @Date: 2022-09-22 15:45:50
- * @LastEditTime: 2022-09-26 17:25:57
+ * @LastEditTime: 2022-09-26 17:32:21
  * @FilePath: \custom-chart-plugins\highcharts-3d-pie-donut-chart.js
  * @Description: 
  * 
@@ -56,7 +56,6 @@ function HighCharts3dPieChart({ dHelper }) {
             ],
         },
         onMount(options, context) {
-            if (!options.containerId || !context.document) return;
             if (!options.containerId || !context.document) return;
             const { window: { Highcharts } } = context
             const { containerId } = options
