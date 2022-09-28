@@ -2,7 +2,7 @@
  * @Author: cui<devcui@outlook.com>
  * @LastEditors: cui<devcui@outlook.com>
  * @Date: 2022-09-22 16:20:54
- * @LastEditTime: 2022-09-28 10:15:28
+ * @LastEditTime: 2022-09-28 10:17:56
  * @FilePath: \custom-chart-plugins\highcharts-3d-cylinder-chart.js
  * @Description: 
  * 
@@ -118,6 +118,9 @@ function HighCharts3dCylinderChart({ dHelper }) {
                 },
                 title: {
                     text: title
+                },
+                subtitle: {
+                    text: desc
                 },
                 plotOptions: {
                     series: {
