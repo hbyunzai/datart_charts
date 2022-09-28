@@ -2,7 +2,7 @@
  * @Author: cui<devcui@outlook.com>
  * @LastEditors: cui<devcui@outlook.com>
  * @Date: 2022-09-22 16:20:54
- * @LastEditTime: 2022-09-22 16:34:55
+ * @LastEditTime: 2022-09-28 10:15:28
  * @FilePath: \custom-chart-plugins\highcharts-3d-cylinder-chart.js
  * @Description: 
  * 
@@ -16,7 +16,23 @@ function HighCharts3dCylinderChart({ dHelper }) {
                 { label: "dimension", key: "dimension", type: "group", allowSameField: false },
                 { label: "metrics", key: "metrics", type: "aggregate", allowSameField: false }
             ],
-            styles: [],
+            styles: [
+                {
+                    label: '标题',
+                    key: 'title',
+                    comType: 'input',
+                },
+                {
+                    label: '描述',
+                    key: 'desc',
+                    comType: 'input',
+                },
+                {
+                    label: '图例',
+                    key: 'name',
+                    comType: 'input',
+                }
+            ],
             i18ns: [],
         },
         isISOContainer: 'highcharts-3d-cylinder',
@@ -62,6 +78,9 @@ function HighCharts3dCylinderChart({ dHelper }) {
                         colorByPoint: true
                     }
                 },
+                xAxis: {
+                    categories: Highcharts.getOptions().lang.shortMonths
+                },
                 series: [{
                     data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4],
                     name: 'Cylinders',
@@ -69,7 +88,53 @@ function HighCharts3dCylinderChart({ dHelper }) {
                 }]
             })
         },
-        onUpdated(options, context) { },
+        onUpdated(options, context) {
+            if (!options.containerId || !context.document) return;
+            const { config, dataset, containerId } = options;
+            if (!dataset || !dataset.rows || dataset.rows.length === 0) return
+            const { window: { Highcharts } } = context
+            const styleConfigs = config.styles;
+            // 标题
+            let title = styleConfigs.filter((style) => style.key === 'title')
+            title = title.length > 0 ? title[0].value : 'title'
+            // 描述
+            let desc = styleConfigs.filter((style) => style.key === 'desc')
+            desc = desc.length > 0 ? desc[0].value : 'desc'
+            // 图例
+            let name = styleConfigs.filter((style) => style.key === 'name')
+            name = name.length > 0 ? name[0].value : 'name'
+
+
+            Highcharts.chart(containerId, {
+                chart: {
+                    type: 'cylinder',
+                    options3d: {
+                        enabled: true,
+                        alpha: 15,
+                        beta: 15,
+                        depth: 50,
+                        viewDistance: 25
+                    }
+                },
+                title: {
+                    text: title
+                },
+                plotOptions: {
+                    series: {
+                        depth: 25,
+                        colorByPoint: true
+                    }
+                },
+                xAxis: {
+                    categories: dataset.rows.map((d) => d[0])
+                },
+                series: [{
+                    data: dataset.rows.map((d) => d[1]),
+                    name: name,
+                    showInLegend: false
+                }]
+            })
+        },
         onUnMount() { },
         onResize(options, context) { }
     }
