@@ -2,7 +2,7 @@
  * @Author: cui<devcui@outlook.com>
  * @LastEditors: cui<devcui@outlook.com>
  * @Date: 2022-09-20 14:59:37
- * @LastEditTime: 2022-09-28 10:53:07
+ * @LastEditTime: 2022-09-29 09:20:10
  * @FilePath: \custom-chart-plugins\README.md
  * @Description: 
  * 
@@ -22,7 +22,7 @@
 # TODO
 
 - [x] echarts-3d-bar-chart
-- [ ] echarts-bar-multiple-y-axis-chart
+- [x] echarts-bar-multiple-y-axis-chart
 - [ ] echarts-bar-negative2-chart
 - [ ] echarts-bar-polar-label-tangential-chart
 - [ ] highcharts-3d-area-multiple-chart
