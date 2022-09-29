@@ -6,7 +6,59 @@ function EchartsBarMultipleYAxisChart({ dHelper }) {
                 { label: "dimension", key: "dimension", type: "group", allowSameField: false },
                 { label: "metrics", key: "metrics", type: "aggregate", allowSameField: false }
             ],
-            styles: [],
+            styles: [
+                {
+                    label: '左侧图例',
+                    key: 'left',
+                    comType: 'group',
+                    rows: [
+                        {
+                            label: '标题',
+                            key: 'title',
+                            comType: 'input',
+                        },
+                        {
+                            label: '后缀',
+                            key: 'format',
+                            comType: 'input',
+                        }
+                    ]
+                },
+                {
+                    label: '右侧图例',
+                    key: 'right',
+                    comType: 'group',
+                    rows: [
+                        {
+                            label: '标题',
+                            key: 'title',
+                            comType: 'input',
+                        },
+                        {
+                            label: '后缀',
+                            key: 'format',
+                            comType: 'input',
+                        }
+                    ]
+                },
+                {
+                    label: '右侧图例',
+                    key: 'right_2',
+                    comType: 'group',
+                    rows: [
+                        {
+                            label: '标题',
+                            key: 'title',
+                            comType: 'input',
+                        },
+                        {
+                            label: '后缀',
+                            key: 'format',
+                            comType: 'input',
+                        }
+                    ]
+                },
+            ],
             i18ns: [],
         },
         isISOContainer: 'echarts',
@@ -57,7 +109,6 @@ function EchartsBarMultipleYAxisChart({ dHelper }) {
                         axisTick: {
                             alignWithLabel: true
                         },
-                        // prettier-ignore
                         data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
                     }
                 ],
@@ -136,6 +187,146 @@ function EchartsBarMultipleYAxisChart({ dHelper }) {
             instance.setOption(option)
         },
         onUpdated(options, context) {
+            if (!options.containerId || !context.document) return;
+            const { config, dataset } = options;
+            if (!dataset || !dataset.rows || dataset.rows.length === 0) return
+            const dataConfigs = config.datas || [];
+            const styleConfigs = config.styles;
+            const groupConfigs = dataConfigs.filter(c => c.type === 'group').flatMap(config => config.rows || []);
+            const aggregateConfigs = dataConfigs.filter(c => c.type === 'aggregate').flatMap(config => config.rows || []);
+            const objDataColumns = dHelper.transformToObjectArray(dataset.rows, dataset.columns);
+            const data = objDataColumns.map(dc => {
+                return [
+                    dc[dHelper.getValueByColumnKey(groupConfigs[0])],
+                    dc[dHelper.getValueByColumnKey(aggregateConfigs[0])],
+                    dc[dHelper.getValueByColumnKey(aggregateConfigs[1])],
+                    dc[dHelper.getValueByColumnKey(aggregateConfigs[2])],
+                ]
+            });
+
+            const legend = [];
+            const formats = [];
+            styleConfigs.forEach((s, i) => {
+                if (s.key === 'left') {
+                    leftStyle = s
+                }
+                if (s.key === 'right') {
+                    rightStyle = s
+                }
+                if (s.key === 'right_2') {
+                    right_2_Style = s
+                }
+                s.rows.forEach((ss) => {
+                    if (ss.key === 'title') {
+                        legend.push(ss.value || `default-${i}`)
+                    }
+                    if (ss.key === 'format') {
+                        formats.push(ss.value || '')
+                    }
+                })
+            })
+
+
+            const colors = ['#5470C6', '#91CC75', '#EE6666'];
+            let option = {
+                color: colors,
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross'
+                    }
+                },
+                grid: {
+                    right: '20%'
+                },
+                toolbox: {
+                    feature: {
+                        dataView: { show: true, readOnly: false },
+                        restore: { show: true },
+                        saveAsImage: { show: true }
+                    }
+                },
+                legend: {
+                    data: legend
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        axisTick: {
+                            alignWithLabel: true
+                        },
+                        data: data.map((d) => d[0])
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value',
+                        name: legend[1],
+                        position: 'right',
+                        alignTicks: true,
+                        axisLine: {
+                            show: true,
+                            lineStyle: {
+                                color: colors[0]
+                            }
+                        },
+                        axisLabel: {
+                            formatter: `{value} ${formats[1]}`
+                        }
+                    },
+                    {
+                        type: 'value',
+                        name: legend[2],
+                        position: 'right',
+                        alignTicks: true,
+                        offset: 80,
+                        axisLine: {
+                            show: true,
+                            lineStyle: {
+                                color: colors[1]
+                            }
+                        },
+                        axisLabel: {
+                            formatter: `{value} ${formats[2]}`
+                        }
+                    },
+                    {
+                        type: 'value',
+                        name: legend[0],
+                        position: 'left',
+                        alignTicks: true,
+                        axisLine: {
+                            show: true,
+                            lineStyle: {
+                                color: colors[2]
+                            }
+                        },
+                        axisLabel: {
+                            formatter: `{value} ${formats[0]}`
+                        }
+                    }
+                ],
+                series: [
+                    {
+                        name: legend[1],
+                        type: 'bar',
+                        data: data.map((d) => d[1] || 0)
+                    },
+                    {
+                        name: legend[2],
+                        type: 'bar',
+                        yAxisIndex: 1,
+                        data: data.map((d) => d[2] || 0)
+                    },
+                    {
+                        name: legend[0],
+                        type: 'line',
+                        yAxisIndex: 2,
+                        data: data.map((d) => d[3] || 0)
+                    }
+                ]
+            };
+            instance.setOption(option)
         },
         onUnMount() {
             if (instance) {
