@@ -207,15 +207,6 @@ function EchartsBarMultipleYAxisChart({ dHelper }) {
             const legend = [];
             const formats = [];
             styleConfigs.forEach((s, i) => {
-                if (s.key === 'left') {
-                    leftStyle = s
-                }
-                if (s.key === 'right') {
-                    rightStyle = s
-                }
-                if (s.key === 'right_2') {
-                    right_2_Style = s
-                }
                 s.rows.forEach((ss) => {
                     if (ss.key === 'title') {
                         legend.push(ss.value || `default-${i}`)
